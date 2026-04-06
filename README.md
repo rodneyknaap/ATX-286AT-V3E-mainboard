@@ -12,16 +12,24 @@ As with the first revision, the design is based on the original IBM 5170 PC/AT c
 
 The project consists of an ATX mainboard supporting XMS and EMS according to the EMS drivers created by sqpat here on GitHub.
 
-SRAM ICs can be added as a set to each low and high byte module which will result in 2MB of SRAM per set of a high byte and low byte SRAM chip.
-The memory layout is printed on the mainboard. The sets are numbered 1 to 8, 1 to 4 are 8MB of XMS, 5 to 8 are 8MB of which at the moment the first 4MB double as XMS or EMS RAM.
-So a builder who wants to have XMS and EMS should minimally populate RAM sets 5 and 6 to have 4MB of EMS. The sets 5 and 6 can then be added to what is populated in sets 1 to 4 to increase that XMS capacity if EMS is not in use. Minimum to populate would be set 1 only which would lead to 2MB of XMS only. For example sets 1, 5 and 6 could be populated which results in 6MB of XMS of which 4MB can be used as EMS when EMS in use. Usually XMS and EMS are not combined at the same time because EMS is used in real mode of the 286 CPU.
+SRAM ICs can be added to the low and high byte position of the same set which will then result in 2MB of 16 bit mode SRAM available for that set position of the memory map.
+The memory layout is also printed on the mainboard. The sets are numbered 1 to 8.  
+Sets 1 to 4 are 8MB of XMS  
+Sets 5 to 8 are 8MB which are able to double as XMS or EMS RAM.  
+
+So a builder who wants to have XMS and EMS should populate RAM sets 5 and 6 to have 4MB of EMS, and would need to populate set 1 to have conventional RAM for the system.  
+The sets 5 and 6 can be added to what is populated in sets 1 to 4 to increase the XMS capacity while EMS is not in use.  
+So minimum to populate would be set 1 only which would lead to 2MB of XMS only. Besides this requirement, population is flexible.  
+For example sets 1, 5 and 6 could be populated which results in 6MB of XMS of which 4MB can be used as EMS when EMS in use. Usually XMS and EMS are not combined at the same time because EMS is used in real mode of the 286 CPU.  Populating sets 1,2 and 5,6 can provide the system with 8MB of XMS of which 4MB of the XMS can double as EMS for running RealDOOM. Other configurations are also possible. Specific configurations require small logic updates in the EMS controller to adapt the system to the populated amounts of RAM.
 
 The mainboard supports the 80286 16 bit CPU, bus driving is now completely done by CPLD logic.
 A Harris 286 rated at 20MHz is recommended, certain older manufacturing dated chips are able to run at much higher clock speeds in other systems.
 A good manufacturing year is 1992 for these Harris 20MHz chips. Later ones may not clock as high as earlier ones.
 
 Basically for composing the core PC/AT system based on IBM 5170 technology all logic is now contained within 5 CPLD ICs.
-A few TTL chips are added for the printer port output enabled parts. When using the printer port, make sure to check the pins of the header in the schematic and make sure your cable matches those.
+A few TTL chips are added for the printer port output enabled parts. And a few CMOS chips to generate OSC and a 16MHz clock. These are then divided down by the IO decoder CPLD for other frequencies.  
+
+When using the printer port, make sure to check the pins of the header in the schematic and make sure your cable matches those.
 Printer port has not been tested yet in the current edition, however has been verified in other revisions using TTL ICs to comprise a printer port.
 
 ## Purpose and permitted use, cautions for a potential builder of this design
