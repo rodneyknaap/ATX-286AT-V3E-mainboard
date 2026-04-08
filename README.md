@@ -70,8 +70,35 @@ The REV3D project PCB layout and CPLD chipset projects have been created and awa
 
 Initial quartus projects have been pin verified against the mainboard schematic and layout.
 
+# About the System controller CPLD  
+The system controller CPLD is a timing sensitive design.
+It has been verified in the REV3D system to be stable using a 44.8 MHz oscillator as the FCLOCK source.
+Please note, the same frequency rating of the System controller CPLD must be used when building this design. Using CPLD logic with different timing may or may not be functional but this cannot be predicted at this time. Recommended rating of the System controller is 10ns. 
+The exact chip used for debugging and testing is the Atmel "ATF1508AS 10AI100". 
+For the larger 208 pin ALTERA CPLDs the type is EPM7256SQC208-10 which is also a 10ns rated chip.
+In the REV3E design, the FCLOCK net has been reduced to only supply the clock to the System controller.
+Previously it has been routed to other CPLDs however after debugging and development these connections were not in use and have been removed in REV3E in order to reduce the stray capacitance on the FCLOCK signal. In addition a 33 ohm resistor has been added in series with the oscillator footprint to possibly improve the clock edges.
+This will need to be verified with testing and possibly the resistor needs to be bypassed if it causes adverse effects on the timing of the System controller.
+
+The System controller is a sensitive design and needs to be left in roughly the same configuration as the REV3D system.
+So the quartus project has been tested with the REV3D system to be fully functional at 44.8MHz FCLOCK.
+A few preparations have been done and verified to be functional as well by modifying the REV3D system:
+- moved the 16M clock and 8042_CLK output from the System controller to the IO decoder CPLD.
+- disconnected RESET output pin 60 from the board net and supplied RESET from the EMS controller CPLD.
+- removed the solder point footprints from the System controller
+- created fixed traces between system controller, data bus driver and address bus driver CPLDs for possible future use
+These changes have been verified with the REV3D system.
+  
+In the REV3D/REV3E System controller there are a few unused outputs which must remain in place for the time being:
+- SYSCON_1 and SYSCON_2 must remain configured as buffered secondary outputs of /MEMR and /MEMW to the Data bus driver CPLD. These are not used but result in the quartus compilation outcome which has improved timing for VGA RAM cycles by the 286.
+- the RESET output signal on pin 60 must remain in place in the quartus design. Removing this will result in distupting the system control timing and the POST halting at POST code 10  
+
+In future programming of the System controller the design may be altered to a synchronous model using a higher clock speed to create more timing resolution, depending on the logic capacity of the CPLD to be sufficient or not. For this purpose I have prepared to reduce the functions and number of pins in use on the System controller CPLD further to the minimum requirement. Arguably the coprocessor control could be removed to use more logic for system control using a 286 only.
+
+If a new System controller quartus design is created in the future, the pins currently left assigned and not actively driving other logic outside the System controller may then also be left unused in order to hopefully free up more logic capacity for the System control design.
+
 Kind regards,
 
 Rodney
 
-Last updated april 6th, 2026.
+Last updated april 8th, 2026.
