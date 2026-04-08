@@ -97,6 +97,13 @@ In future programming of the System controller the design may be altered to a sy
 
 If a new System controller quartus design is created in the future, the pins currently left assigned and not actively driving other logic outside the System controller may then also be left unused in order to hopefully free up more logic capacity for the System control design.
 
+# Regarding the component list  
+I assembled a BOM file and added a few manual comments. 
+So in the schematic some values etc may differ but the BOM PDF is more elaborate.
+In the ATX circuits which operate on 5V standby I have tested the TTL ICs with HC types.
+So this simplifies the partslist for the 74HC04 for the oscillators also to be used for the power circuits.
+Also remember to check the PCB for the definitive footprint shapes if unclear.
+
 Kind regards,
 
 Rodney
