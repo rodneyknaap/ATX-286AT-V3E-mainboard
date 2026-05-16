@@ -65,11 +65,6 @@ The System controller contains cycle control logic which switches the 286 on a l
 
 The Address driver/decoder CPLD in addition contains DMA specific logic in order not only to generate the system address bus from the CPU but also from the DMACs and a bus Master if present on the slot connector. The Address driver/decoder is also decoding all XMS and EMS memory in the system. For this purpose the Address driver/decoder communicates with the EMS controller in order to determine the selection of XMS or EMS memory for each area of system memory. By default, each page block of system memory is initially programmed to be a default page which is located in the XMS memory chips. When a certain block is reprogrammed in the EMS page registers, it will be remapped into any programmable block inside the EMS memory pool. By programming a memory block back to default, the original memory contents are mapped back into that 16KB page block.
 
-# Status of the project  
-The REV3D project PCB layout and CPLD chipset projects have been created and awaiting to transfer the components to a REV3E board for further testing.
-
-Initial quartus projects have been pin verified against the mainboard schematic and layout.
-
 # About the System controller CPLD  
 The system controller CPLD is a timing sensitive design.
 It has been verified in the REV3D system to be stable using a 44.8 MHz oscillator as the FCLOCK source.
@@ -103,6 +98,49 @@ So in the schematic some values etc may differ but the BOM PDF is more elaborate
 In the ATX circuits which operate on 5V standby I have tested the TTL ICs with HC types.
 So this simplifies the partslist for the 74HC04 for the oscillators also to be used for the power circuits.
 Also remember to check the PCB for the definitive footprint shapes if unclear.
+
+# Status of the project  
+The REV3D project PCB layout and initial starting point CPLD chipset projects have been created. The first build is finished and debugging is completed.
+I have ran tests which will continue however these now all show indications of full stability.
+
+Special thanks go out to Edzard on the VCF forum who has kindly offered to send me a manufactured REV3E board from his PCB order which he made from JLCPCB.
+So I am happy to accept his offer which enables me to build an improved version of the REV3E design where we include additional design features which came to mind when building and using the REV3D system.
+
+I have received an ENIG finish blue color REV3E board from Edzard and proceeded to desolder the REV3D board and transferred all the components onto the REV3E board.
+This time I had a little more work to double check all the soldering which was mostly attributed to not having the correct soldering tips.
+So it is recommended to use shorter tips and not any stepped model tips which don't have sufficient capacity to transfer heat for all types of soldering.
+So shorter tips which have a solid structure are better, where we can use a wedge shaped tip for pre-tinning the QFP pads and reflowing the QFP CPLDs onto the pads.
+In addition the more pointy tip can also be used for reflowing QFP pins and also are able to transfer sufficient heat for soldering SO SMD ICs and the 286 CPU where we are dealing with ground surfaces adjacent to certain pads. Being able to direct enough heat to these large surface pads we are able to solder these neatly in a single go. Also the page register SRAMs U10 and U11 require special care to be able to direct enough heat onto the GND pads involved there. For all SMD work it's necessary to make sure that at all times there is sufficient no-clean flux present on the pads before soldering. Same goes for pre-tinning QFP pads, there it's necessary to apply generous no-clean flux when pre-tinning and making a wiping movement with the iron while adding solder wire. The wiping should be kept as short as possible in duration in order to not compromise the pads by excessive heat treatment. The iron should be set around 350 degrees at most. After pre-tinning the board needs to be cleaned with IPA and then the CPLD can be positioned 100% straight, and while holding it in place and continually checking the alignment, heating a few middle pins on each side to fixate the QFP. Next a generous amound of no-clean flux can be added and all the pins can be reflowed in the direction of the length of the pins. So no solder is added besides the pre-tinning and we wipe the pins, not drag across them. The flux and heat applied will stimulate the pre-tinned solder from the pads to form a bond between the pin and pad. So all pins need to be solid checked by gently pressing them from the side with a thin tweezer tip. If the pin still moves it's not solid yet and it needs another reflowing treatment.
+
+# Ensuring full stability  
+There are a few critical points to observe which I have determined with the initial build and test.  
+These points need to be followed or otherwise the build will not be stable at 22.4MHz CPU clock speed:  
+- check and re-check your soldering work, if need be, reflow another time
+- measure adjacent pins against any shorts, sometimes these may be difficult to spot
+- beep out measure the SRAM pins from pad edge to the pin itself near the chip plastic to ensure a proper solder bond is formed
+- there need to be large VCC capacitors on the following footprints:  
+C68 - 1500µF or larger  
+C63 - 3300µF  
+C56 - 1000µF or larger, check the space, the VCC fuse can be moved to the side a little  
+Voltage rating is recommended around 10V at least.  
+- I am testing a 33 ohm resistor in series with the FCLOCK oscillator  
+Unless otherwise updated here this is also a recommendation.  
+- Putting the VGA card in slot J6 may be advisible. A Cirrus Logic card is strongly recommended. Many other VGA cards will not operate well with the CPU at above 20MHz. In my test case the far right slot J7 was not working well with the VGA card. This may have been caused by a bad slot connector however it may also be related to other causes so I want to mention this as a recommendation. In my case I experienced some freezing in RealDOOM, which was completely cured after moving the VGA card to J6. It may or not be related to the slot connector being bad. I also noticed when touching the VGA card in slot J7 I suddenly got a crash. So this makes me possibly suspect my slot J7 being faulty, however be aware of this issue and when seen, move the VGA card to J6. Best demonstration if any issue is present is running RealDOOM and continually letting it run through cycles of automatic demo games which start running automatically after starting RealDOOM. Symptoms of the VGA card having issues are that you may spot pixelation issues near the top status text in red, and freezing which may occur as soon as one minute after the demo is running. So in my case as described I found that after moving the card to J6, all the issues cleared up.
+- the memory SRAMs are better soldered more solidly using the thinnest leaded solder wire you can find, using generous flux. I have seen pins which look and feel solid however I was not able to measure full conductivity.
+
+# Updated CPLD projects  
+I found a small issue with the memory decoding where we are going to need to adjust the decoding logic to position the SRAMs continuously in the memory map in order for RAM populated in the EMS area set 5-8 to be able to be detected as part of the XMS memory. Any gaps will prevent proper detection and also may make the POST fail entirely.  
+
+I will upload CPLD project sets here for specific memory population schemes.  
+For example a CPLD project archive with "1256" in the file name indicates that the project is intended for builders who solder in SRAM sets, 1, 2, 5 and 6.  
+So this example provides 4 SRAM sets of 2MB each, which equals a total of 8MB of SRAM. Sets 5 and 6 are by default designated as providing 4MB of EMS when the RealDOOM EMS driver is loaded during startup, or otherwise by default are added to the total XMS memory amount.  
+
+Similarly, a CPLD project archive with  "156" in the file name indicates that the project is intended for builders who solder in SRAM sets 1, 5 and 6. 
+So this would provide 6MB of XMS memory, of which the top 4MB can be assigned as EMS by loading the EMS driver by sqpat.  
+And so on, additional projects may be added for different desired population. Such as 12345678 will indicate a full 16MB of SRAM, which has not been tested as of yet.  
+
+The CPLD projects currently don't include being able to RESET from an IO port write, however this would be possible by updating the EMS controller.
+So if you are programming software and have a need for this function, send me a message. For example, a software RESET could be used to disable the EMS function and default back to XMS after running RealDOOM, so a software RESET can also be used without needing to apply the RESET button. This option came to mind while working on the REV3E design that we can add this function and it may possibly be of use.
 
 Kind regards,
 
