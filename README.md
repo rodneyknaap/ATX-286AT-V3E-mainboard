@@ -97,18 +97,20 @@ In future programming of the System controller the design may be altered to a sy
 If a new System controller quartus design is created in the future, the pins currently left assigned and not actively driving other logic outside the System controller may then also be left unused in order to hopefully free up more logic capacity for the System control design.
 
 # Regarding the component list  
-I assembled a BOM file and added a few manual comments. 
+I assembled a BOM file and added a few manual comments.  
 So in the schematic some values etc may differ but the BOM PDF is more elaborate.
 In the ATX circuits which operate on 5V standby I have tested the TTL ICs with HC types.
 So this simplifies the partslist for the 74HC04 for the oscillators also to be used for the power circuits.
-Also remember to check the PCB for the definitive footprint shapes if unclear.
+Also remember to check the PCB for the definitive footprint shapes whether these fit what you are ordering if unclear.  
+(may 16th, 2026) A few capacitors are changed for stability reasons following the debug process, check the updated component list V002.  
+In addition the USB mouse connector should be a type "A", check the footprint shape on the board to ensure your connector will fit.
 
 # Status of the project  
-The REV3E project PCB layout gerber files are released here. The first build is finished and debugging is completed.
+The REV3E project PCB layout gerber files are released. The first build is finished and debugging is completed.
 I have ran tests which will continue however these now all show indications of full stability.
-The stable verified release version is release 002.
-This release has been tested for hours without issues.
-Check the updated component list, and possibly the Cirrus Logic VGA card needs to be installed in J6 which may improve the operation with RealDOOM.
+The stable verified CPLD release version is release 002.
+This release has been tested for hours of continued test operation without issues using a variation of tests.
+Check the updated component list, and possibly a recommendation that the Cirrus Logic VGA card needs to be installed in J6 which may improve the operation with RealDOOM.
 
 Special thanks go out to Edzard on the VCF forum who has kindly offered to support the project and send me a manufactured REV3E board from his own PCB order from JLCPCB. Thank you Edzard! So I was happy to accept his offer which enabled me to build an improved version of the REV3E design where we now are able to include a few really useful additional design features which came to mind while building and using the REV3D system. The most notable one being that the SRAMs are now populated on the mainboard itself, and the unused 16 bit mode ROM footprints are removed. So a few other areas have been slightly shifted to make more space for the SRAMs.
 
@@ -147,6 +149,19 @@ There is a minimal diagnostics version of the Address bus driver now released he
 So this project may only provide useful help if you experience issues that you cannot trace in normal tests.  
 It is what I used myself to get the initial POST going because I apparently had some soldering issues in the SRAM section and needed to do a few more reflows of the CPLDs until I got 2MB operation stable.  
 Filename is: CPLD_CHIPSET_DIAGNOSTIC.zip  
+
+# The USB to serial mouse adapter by Limeprogramming  
+This adapter is proven to operate equally to any modern PC using a USB mouse receiver, tested with a cheap but reliable Logictech serial mouse.  
+The RP2040 needs to be soldered to a single angled pin strip which can mate with a double female pinsocket connector on the board. In addition it needs a bridge to be soldered onto the mouse speed jumper GPIO pin connecting it to GND and selecting the proper mouse speed. See my example photos for what I used, and recommended for your initial tests, likely to be the version mouse speed you may continue to use. In addition the USB + and - signal pins need to be connected from the RP2040 pads to a two pin female header which you can plug into the two pin male pinheader on the board next to the RP2040 connector. Finally you need to solder the VCC pins of the RP2040 to a single wire, plugging into the two VCC holes of the PCB female pinsocket. Otherwise the photos also illustrate the process of preparing and connecting the RP2040. This needs to be programmed with the Limeprogramming project file. His GitHub for the project is here:
+https://github.com/LimeProgramming/USB-serial-mouse-adapter  
+The file to drop into the RP2040 is in this folder:  
+https://github.com/LimeProgramming/USB-serial-mouse-adapter/tree/main/binary  
+
+A few example photos of the module as prepared and inserted into the mainboard pinsocket:  
+![RP2040_LIMEPROGRAMMING](USBMOUSE_RP_PICO_INSTALLED.jpg)   
+
+![RP2040_LIMEPROGRAMMING_BACK](RP_PICO_MOUSE_SPEED_JUMPER.jpg)   
+
 
 The CPLD projects currently don't include being able to RESET from an IO port write, however this would be possible by updating the EMS controller.
 So if you are programming software and have a need for this function, send me a message. For example, a software RESET could be used to disable the EMS function and default back to XMS after running RealDOOM, so a software RESET can also be used without needing to apply the RESET button. This option came to mind while working on the REV3E design that we can add this function and it may possibly be of use.
