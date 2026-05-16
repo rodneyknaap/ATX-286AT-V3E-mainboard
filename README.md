@@ -132,16 +132,21 @@ Unless otherwise updated here this is also a recommendation.
 - Putting the VGA card in slot J6 may be advisible. A Cirrus Logic card is strongly recommended. Many other VGA cards will not operate well with the CPU at above 20MHz. In my test case the far right slot J7 was not working well with the VGA card. This may have been caused by a bad slot connector however it may also be related to other causes so I want to mention this as a recommendation. In my case I experienced some freezing in RealDOOM, which was completely cured after moving the VGA card to J6. It may or not be related to the slot connector being bad. I also noticed when touching the VGA card in slot J7 I suddenly got a crash. So this makes me possibly suspect my slot J7 being faulty, however be aware of this issue and when seen, move the VGA card to J6. Best demonstration if any issue is present is running RealDOOM and continually letting it run through cycles of automatic demo games which start running automatically after starting RealDOOM. Symptoms of the VGA card having issues are that you may spot pixelation issues near the top status text in red, and freezing which may occur as soon as one minute after the demo is running. So in my case as described I found that after moving the card to J6, all the issues cleared up.
 - the memory SRAMs are better soldered more solidly using the thinnest leaded solder wire you can find, using generous flux. I have seen pins which look and feel solid however I was not able to measure full conductivity in one of the pins. So this can be checked by measuring from the pad edge to the pin near the plastic top of the chip.
 
-# Updated CPLD projects  
-I found a small issue with the memory decoding where we are going to need to adjust the decoding logic to position the SRAMs continuously in the memory map in order for RAM populated in the EMS area set 5-8 to be able to be detected as part of the XMS memory. Any gaps will prevent proper detection and also may make the POST fail entirely.  
+# CPLD projects: verified release 002  
+I have upload CPLD project sets for two memory population schemes:  
+- populate sets 1, 5 and 6 to enable 6MB of XMS, of which the top 4MB is taken control of by Patricks EMS driver  
+- populate sets 1, 2, 5 and 6 to enable 8MB of XMS, of which the top 4MB is taken control of by Patricks EMS driver  
+NB: For the memory configuration differences above, only the Address bus driver CPLD is different, all other CPLDs are the same.  
+Filename for the Release 2 archive containing these versions is: REV3E_CPLD_CHIPSET_002_MAY_2026.zip
 
-I will upload CPLD project sets here for specific memory population schemes.  
-For example a CPLD project archive with "1256" in the file name indicates that the project is intended for builders who solder in SRAM sets, 1, 2, 5 and 6.  
-So this example provides 4 SRAM sets of 2MB each, which equals a total of 8MB of SRAM. Sets 5 and 6 are by default designated as providing 4MB of EMS when the RealDOOM EMS driver is loaded during startup, or otherwise by default are added to the total XMS memory amount.  
+So Release 2 is the stable verified version of what is fully functional in my build as per the photos.
+So all projects in release 2 are verified with the verify function of programming against the working system and 100% found identical with what is running stable on my build.
 
-Similarly, a CPLD project archive with  "156" in the file name indicates that the project is intended for builders who solder in SRAM sets 1, 5 and 6. 
-So this would provide 6MB of XMS memory, of which the top 4MB can be assigned as EMS by loading the EMS driver by sqpat.  
-And so on, additional projects may be added for different desired population. Such as 12345678 will indicate a full 16MB of SRAM, which has not been tested as of yet.  
+## Diagnostic version CPLD project  
+There is a minimal diagnostics version of the Address bus driver now released here which only drives 2MB of XMS only operation, and otherwise disables any sections not necessary during the initial debugging phase. So this Address bus driver project is only meant for diagnostics, and should be reprogrammed with the release version which applies to your build after initial 2MB operation is found stable, so you can continue to test the full system operation.  
+So this project may only provide useful help if you experience issues that you cannot trace in normal tests.  
+It is what I used myself to get the initial POST going because I apparently had some soldering issues in the SRAM section and needed to do a few more reflows of the CPLDs until I got 2MB operation stable.  
+Filename is: CPLD_CHIPSET_DIAGNOSTIC.zip  
 
 The CPLD projects currently don't include being able to RESET from an IO port write, however this would be possible by updating the EMS controller.
 So if you are programming software and have a need for this function, send me a message. For example, a software RESET could be used to disable the EMS function and default back to XMS after running RealDOOM, so a software RESET can also be used without needing to apply the RESET button. This option came to mind while working on the REV3E design that we can add this function and it may possibly be of use.
