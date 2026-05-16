@@ -133,14 +133,14 @@ Unless otherwise updated here this is also a recommendation.
 - the memory SRAMs are better soldered more solidly using the thinnest leaded solder wire you can find, using generous flux. I have seen pins which look and feel solid however I was not able to measure full conductivity in one of the pins. So this can be checked by measuring from the pad edge to the pin near the plastic top of the chip.
 
 # CPLD projects: verified release 002  
-I have upload CPLD project sets for two memory population schemes:  
+I have uploaded CPLD a project release set 002 for two memory population schemes:  
 - populate sets 1, 5 and 6 to enable 6MB of XMS, of which the top 4MB is taken control of by Patricks EMS driver  
 - populate sets 1, 2, 5 and 6 to enable 8MB of XMS, of which the top 4MB is taken control of by Patricks EMS driver  
 NB: For the memory configuration differences above, only the Address bus driver CPLD is different, all other CPLDs are the same.  
 Filename for the Release 2 archive containing these versions is: REV3E_CPLD_CHIPSET_002_MAY_2026.zip
 
-So Release 2 is the stable verified version of what is fully functional in my build as per the photos.
-So all projects in release 2 are verified with the verify function of programming against the working system and 100% found identical with what is running stable on my build.
+So Release 002 is the stable verified version of what is fully functional in my build as per the photos.
+So all projects in release 002 are verified with the verify function of programming against the working system and 100% found identical with what is running stable on my build.
 
 ## Diagnostic version CPLD project  
 There is a minimal diagnostics version of the Address bus driver now released here which only drives 2MB of XMS only operation, and otherwise disables any sections not necessary during the initial debugging phase. So this Address bus driver project is only meant for diagnostics, and should be reprogrammed with the release version which applies to your build after initial 2MB operation is found stable, so you can continue to test the full system operation.  
