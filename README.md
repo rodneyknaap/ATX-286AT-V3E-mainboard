@@ -108,9 +108,26 @@ In addition the USB mouse connector should be a type "A", check the footprint sh
 # Status of the project  
 The REV3E project PCB layout gerber files are released. The first build is finished and debugging is completed.
 I have ran tests which will continue however these now all show indications of full stability.
-The stable verified CPLD release version is release 002.
-This release has been tested for hours of continued test operation without issues using a variation of tests.
-Check the updated component list, and possibly a recommendation that the Cirrus Logic VGA card needs to be installed in J6 which may improve the operation with RealDOOM.
+A small gerber update 'U1' was done following the first build, to add a few elco capacitors and some capacitors were moved slightly on the bottom. 
+See the top and bottom component view PDF files.  
+Otherwise no changes are made to the structural design itself in the U1 update.  
+
+# CPLD programming details
+The stable verified CPLD release version is release 002. This requires Quartus II version 13.0 SP1.
+This release has been tested for hours of continued test operation without issues using a variation of tests.  
+
+Check the updated component list, and possibly a recommendation that the Cirrus Logic VGA card needs to be installed in J6 which may improve the operation with RealDOOM.  
+
+You will need a Atmel ATDH1150USB programmer for the 100 pin System controller CPLD and Data bus driver CPLD. This device can program the JED files into the CPLDs using ATMISP software version 7.3 by Microchip. Choose the option to add new device (CTRL-A), after which device leave at "0", set device to ATF1508AS, JTAG instruction "Program/verify", then browse for the correct .JED file for the device connected with JTAG. The system must be powered on right before programming, then press the "Run" button.  
+
+For the 208 pin CPLDs these can be programmed directly from quartus using a cheap Altera USB blaster device. First compile the project by pressing the triangle "play" button. After full compilation is completed, you can press the programmer icon. There you can define the programming hardware using the "hardware setup" button. Next highlight the file line in the file area, and on the left click on "change file", this dialog may take a while to produce the next window, there go to the "output files" directory inside your current quartus project, and choose the .POF file. Make sure to check that date and time match your time of just compiling the project a moment ago before confirming the file. Next to the file, check the boxes for "program/configure" and "verify". Next power up the system and click on "start" button. The dialog should show green in the "progress" section, running up until 100%. Sometimes the programmer communication from quartus may have some issue, which usually can be fixed by trying the "start" button again. Sometimes it's necessary to replug the USB connector into the USB blaster, and do the "hardware setup" again using the button. Finally the USB blaster will do the programming possibly after a little fiddling and retry.  
+
+# CPLD JTAG cable  
+The same cable can be used for ALTERA and Atmel/microchip CPLDs and both of the programmers. On the programmer side, you can use a 10 pin flatcable connector and solder the flatcable to a 6 pin pinheader using some more solid flexible wires which you can solder and use some heat shrink tubing to solidify the attachment to the flatcable ends. Next the more solid flexible wires can be soldered to the female single row pinheader that goes on the JTAG pins on the board, again using heat shrink tubing to ensure the wires won't bend and snap off easily from the connector.  
+Pinouts of the cable are as follows:  
+
+![JTAG_PROGRAMMING_CABLE](JTAG_CABLE.png)  
+
 
 Special thanks go out to Edzard on the VCF forum who has kindly offered to support the project and send me a manufactured REV3E board from his own PCB order from JLCPCB. Thank you Edzard! So I was happy to accept his offer which enabled me to build an improved version of the REV3E design where we now are able to include a few really useful additional design features which came to mind while building and using the REV3D system. The most notable one being that the SRAMs are now populated on the mainboard itself, and the unused 16 bit mode ROM footprints are removed. So a few other areas have been slightly shifted to make more space for the SRAMs.
 
@@ -132,7 +149,8 @@ Voltage rating is recommended around 10V at least.
 - I am testing a 33 ohm resistor in series with the FCLOCK oscillator  
 Unless otherwise updated here this is also a recommendation.  
 - Putting the VGA card in slot J6 may be advisible. A Cirrus Logic card is strongly recommended. Many other VGA cards will not operate well with the CPU at above 20MHz. In my test case the far right slot J7 was not working well with the VGA card. This may have been caused by a bad slot connector however it may also be related to other causes so I want to mention this as a recommendation. In my case I experienced some freezing in RealDOOM, which was completely cured after moving the VGA card to J6. It may or not be related to the slot connector being bad. I also noticed when touching the VGA card in slot J7 I suddenly got a crash. So this makes me possibly suspect my slot J7 being faulty, however be aware of this issue and when seen, move the VGA card to J6. Best demonstration if any issue is present is running RealDOOM and continually letting it run through cycles of automatic demo games which start running automatically after starting RealDOOM. Symptoms of the VGA card having issues are that you may spot pixelation issues near the top status text in red, and freezing which may occur as soon as one minute after the demo is running. So in my case as described I found that after moving the card to J6, all the issues cleared up.
-- the memory SRAMs are better soldered more solidly using the thinnest leaded solder wire you can find, using generous flux. I have seen pins which look and feel solid however I was not able to measure full conductivity in one of the pins. So this can be checked by measuring from the pad edge to the pin near the plastic top of the chip.
+- the memory SRAMs are better soldered more solidly using the thinnest leaded solder wire you can find, using generous flux. I have seen pins which look and feel solid however I was not able to measure full conductivity in one of the pins. So this can be checked by measuring from the pad edge to the pin near the plastic top of the chip for all pins to ensure 100% electrical connections.
+- active cooling required for the 4 CPLDs nearest the 286 CPU. Depending on the ambient temperature, particularly the 100 pin CPLDs require some form of active cooling for example using a 8cm fan. If ambient temperature is higher, like in the summer you can run the fan at full speed, otherwise using 5V to run the fan at lower RPM will be sufficient. 
 
 # CPLD projects: verified release 002  
 I have uploaded CPLD a project release set 002 for two memory population schemes:  
