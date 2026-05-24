@@ -128,6 +128,11 @@ Pinouts of the cable are as follows:
 
 ![JTAG_PROGRAMMING_CABLE](JTAG_CABLE.png)  
 
+![JTAG_PROGRAMMING_CABLE](JTAG_CABLE_1.jpg)  
+
+![JTAG_PROGRAMMING_CABLE](JTAG_CABLE_1.jpg)  
+Here I marked pin 1 by using a longer connector strip where the unused section protrudes at the opposite of pin 1, so the "edge" wire is always pin 1, if that makes sense.  
+
 
 Special thanks go out to Edzard on the VCF forum who has kindly offered to support the project and send me a manufactured REV3E board from his own PCB order from JLCPCB. Thank you Edzard! So I was happy to accept his offer which enabled me to build an improved version of the REV3E design where we now are able to include a few really useful additional design features which came to mind while building and using the REV3D system. The most notable one being that the SRAMs are now populated on the mainboard itself, and the unused 16 bit mode ROM footprints are removed. So a few other areas have been slightly shifted to make more space for the SRAMs.
 
