@@ -128,10 +128,10 @@ Pinouts of the cable are as follows:
 
 ![JTAG_PROGRAMMING_CABLE](JTAG_CABLE.png)  
 
-The cable is inserted here into the Microchip ATDH1150USB programmer, in the "JTAG-A" header on the back right of the programmer:  
+The cable is inserted here into the Microchip ATDH1150USB programmer for programming the smaller 100 pin ATMEL CPLDs, using the "JTAG-A" header on the back right of the programmer:  
 ![JTAG_PROGRAMMING_CABLE](JTAG_CABLE_1.jpg)  
 
-Here is the same cable inserted into the tiny "USB Blaster REV C" for programming the larger ALTERA CPLDS:  
+Here is the same cable inserted into the tiny "USB Blaster REV C" for programming the larger 208 pin ALTERA CPLDS:  
 ![JTAG_PROGRAMMING_CABLE](JTAG_CABLE_2.jpg)  
 
 ![JTAG_PROGRAMMING_CABLE](JTAG_CABLE_3.jpg)  
