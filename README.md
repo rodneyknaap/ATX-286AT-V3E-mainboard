@@ -130,7 +130,7 @@ Pinouts of the cable are as follows:
 
 ![JTAG_PROGRAMMING_CABLE](JTAG_CABLE_1.jpg)  
 
-![JTAG_PROGRAMMING_CABLE](JTAG_CABLE_1.jpg)  
+![JTAG_PROGRAMMING_CABLE](JTAG_CABLE_3.jpg)  
 Here I marked pin 1 by using a longer connector strip where the unused section protrudes at the opposite of pin 1, so the "edge" wire is always pin 1, if that makes sense.  
 
 
