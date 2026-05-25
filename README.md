@@ -138,6 +138,21 @@ Here is the same cable inserted into the tiny "USB Blaster REV C" for programmin
 
 As seen here in the photo, I indicated pin 1 by using a longer connector strip where the unused section with pins removed protrudes at the opposite side of pin 1, so the "edge" wire is always pin 1, as seen here in the photo above.  
 
+# A special caution when you suspect your CPLDs to be recycled  
+If you got your CPLDs from a recycler, this can be evident from the chip looking like it has been soldered before, that may mean that a programming is present in the chip, which can then conflict with the other chips on the board, so a special procedure is advised for such chips suspected to contain programming:  
+- first solder the ATX PSU connector and all components of the ATX circuit on the bottom right of the board (top ICs, capacitor and bottom resistors, capacitors and diode), as well as the VCC fuse and for example one ELCO next to the ATX connector on VCC.  
+- solder the POWER and RESET two pin headers into the board, and add a jumper to short the RESET header until all further assembly and programming is done.  
+- then solder the CPLD to the board, including the JTAG header pinstrip  
+- if there are more "used" CPLDs, add them one by one, advised if the system controller CPLD is among them, do this one first because it controls RESET, also see programming below  
+- power on the board  
+- program the specific quartus project POF(208 pin) or JED file(100 pin) into the CPLD  
+- power off the board after the programming sequence is completed  
+- repeat steps for each additional "used" CPLD  
+- continue normally with assembly of your REV3E board
+
+(!) If programming fails, that may mean that the CPLD programming contained in the chip disabled the JTAG pins to use them for general IO purposes, and the CPLD needs to be taken out of this mode. For this purpose, a special procedure needs to be used. The procedure for 100 pin ATMEL CPLD, for example the 100 pin system controller is: pull pin 88 ("GLOBAL OE") high to 12V using a 2k2 resistor. Then power on the system and the CPLD should power up in JTAG mode.  
+NB: The 100 pin Data bus driver CPLD uses pin 88 (GLOBAL_OE) for 286_HLDA, so make sure there is no CPU on the board since it may get damaged from pulling up to 12V, or prevent the voltage level to happen on the CPLD pin due to asserting 286_HLDA normally low. The System controller CPLD uses pin 88 as the "SLOW_AT_CYCLE_n" input from the Address bus driver CPLD. So there the Address bus driver CPLD should not be present on the board in case this CPLD is pre-programmed and needs pin 88 pulled up to 12V using a 2k2 resistor. 
+
 # About this revision REV3E  
 Special thanks go out to Edzard on the VCF forum who has kindly offered to support the project and send me a manufactured REV3E board from his own PCB order from JLCPCB. Thank you Edzard! So I was happy to accept his offer which enabled me to build an improved version of the REV3E design where we now are able to include a few really useful additional design features which came to mind while building and using the REV3D system. The most notable one being that the SRAMs are now populated on the mainboard itself, and the unused 16 bit mode ROM footprints are removed. So a few other areas have been slightly shifted to make more space for the SRAMs.
 
@@ -190,6 +205,53 @@ A few example photos of the module as prepared and inserted into the mainboard p
 
 ![RP2040_LIMEPROGRAMMING_BACK](RP_PICO_MOUSE_SPEED_JUMPER.jpg)   
 
+# Powering up and programming your REV3E board for the first time  
+After building the project and ensuring that all SMD connections are 100% solid to the board, you can start to program the CPLDs using the programmer and software as listed above.  
+During the first programming of the CPLDs, put a jumper on the RESET header pins to keep the system in RESET until all CPLDs are done, which will keep the 286 CPU inactive in RESET after the System controller is programmed and active. The 286 only starts to load code from the system ROM after RESET is released, so keeping the jumper on the header ensures this is not happening.
+
+If any CPLD is suspected to be pre-programmed, see the cautions listed above first.  
+
+The system is best programmed in the order listed here, powering on briefly before clicking the program button, and powering off right after programming is finished each time between the CPLDs:  
+- System controller CPLD (applies /RESET and RESET_286 to system, keep jumper on the RESET header during all CPLD programming)
+- EMS controller CPLD (inverts /RESET for IO ICs using positive active RESET input)
+- Data bus driver CPLD 
+- Address bus driver CPLD 
+- IO decoder CPLD
+After all these CPLDs are programmed, the system ROM can be put into the socket and you can remove the RESET jumper and run the first tests and possible debugging/troubleshooting can start.
+
+# Troubleshooting tips:
+When the 286 CPU comes out of RESET and has a clock pulse, it will attempt to initialize and load ROM code from the System ROM mirror at FFFFF0. Usually it will find a long jump instruction there, jumping into the start point of the BIOS. The CPU then typically proceeds to run the BIOS POST procedure where it will start to program and test the core AT controllers, possibly in this order:
+- system timer chip
+- set port B bits for speaker operation
+- DMA page mapper 74LS612
+- DMACs 8237
+- IRQ controllers 8259
+- RTC chip DS12885
+- keyboard controller VT82C42
+The system then typically starts to search for RAM memory and do some simple RAM tests.
+
+Next VGA INIT will start by loading the VGA BIOS and running the code from there to bring up the VGA controller and initialize the display output.
+When you get to this level, debugging may be done or at least the hardest part is done, because the system is able to show things on the screen like messages etc.
+
+During the POST, the LED displays run up the POST level outputs written to port 80h, usually from 00 until 2F when booting, and returning to 00 after boot is started.
+Likely the first time when powering on, the BIOS will beep and indicate that CMOS settings need to be set. After a keypress, you can set the options in the BIOS and save.
+During the POST, the test codes will run up very fast, however if the code remains at a certain level, that indicates a problem found in that part of the POST.
+A few typical codes based on MR BIOS are:
+08  DMAC failed
+0A  memory error, usually some connectivity issue or short between address lines etc.
+0B  interrupt controller problem
+0C  interrupt controller or system timer problem
+0D  system timer problem
+0E  system timer problem
+0F  RTC/CMOS problem
+10  VGA INIT problem
+12  keyboard controller problem
+17  A20 control problem related to keyboard controller GATE_A20 output or GATE_A20 not working
+19  parity test problem, should not occur since we don't use parity
+21  BIOS found a CMOS error, entering setup
+22  setup is running
+2F  searching for boot device
+00  booting
 
 The CPLD projects currently don't include being able to RESET from an IO port write, however this would be possible by updating the EMS controller.
 So if you are programming software and have a need for this function, send me a message. For example, a software RESET could be used to disable the EMS function and default back to XMS after running RealDOOM, so a software RESET can also be used without needing to apply the RESET button. This option came to mind while working on the REV3E design that we can add this function and it may possibly be of use.
