@@ -207,7 +207,7 @@ A few example photos of the module as prepared and inserted into the mainboard p
 
 # Powering up and programming your REV3E board for the first time  
 After building the project and ensuring that all SMD connections are 100% solid to the board, you can start to program the CPLDs using the programmer and software as listed above.  
-During the first programming of the CPLDs, put a jumper on the RESET header pins to keep the system in RESET until all CPLDs are done, which will keep the 286 CPU inactive in RESET after the System controller is programmed and active. The 286 only starts to load code from the system ROM after RESET is released, so keeping the jumper on the header ensures this is not happening.
+During the first programming of the CPLDs, put a jumper on the RESET header pins to keep the system in RESET until all CPLDs are done, which will keep the 286 CPU inactive in RESET after the System controller is programmed and active. The 286 only starts to load code from the system ROM after RESET is released, so keeping the jumper on the header ensures this is not happening.  A VGA card is not necessary yet during the programming procedure.
 
 If any CPLD is suspected to be pre-programmed, see the cautions listed above first.  
 
@@ -218,6 +218,7 @@ The system is best programmed in the order listed here, powering on briefly befo
 - Address bus driver CPLD 
 - IO decoder CPLD
 After all these CPLDs are programmed, the system ROM can be put into the socket and you can remove the RESET jumper and run the first tests and possible debugging/troubleshooting can start.
+First tests can be done with a speaker connected to the mainboard, putting some LEDs on the CONV_LED, XMS_LED and BIOS_LED headers, removing the RESET header and using a switch to power on the board. Each time power on the board briefly and watch for POST activity. The XMS and BIOS LEDS, as well as the CONV_LED should blink because the CPU is alternating between accessing RAM and accessing the BIOS ROM in 8 bit mode (CONV_LED also indicates this)
 
 # Troubleshooting tips:
 When the 286 CPU comes out of RESET and has a clock pulse, it will attempt to initialize and load ROM code from the System ROM mirror at FFFFF0. Usually it will find a long jump instruction there, jumping into the start point of the BIOS. The CPU then typically proceeds to run the BIOS POST procedure where it will start to program and test the core AT controllers, possibly in this order:
@@ -252,12 +253,30 @@ A few typical codes based on MR BIOS are:
 22  setup is running
 2F  searching for boot device
 00  booting
+If errors are found, a beep is sounded while outputting the relevant POST code on the display.
 
-The CPLD projects currently don't include being able to RESET from an IO port write, however this would be possible by updating the EMS controller.
-So if you are programming software and have a need for this function, send me a message. For example, a software RESET could be used to disable the EMS function and default back to XMS after running RealDOOM, so a software RESET can also be used without needing to apply the RESET button. This option came to mind while working on the REV3E design that we can add this function and it may possibly be of use.
+The 286 CPU can be detected/scope probe measured to be active by:
+- it receives clock pulses on 286_CLK (measure on coprocessor socket)
+- it asserts S1 for reading the system ROM code, repeated pulses seen right after power on, so power off and on the board, and measure for this (measure on coprocessor socket)  
+- it asserts the address lines to drive the system memory and IO address inputs, slot address lines can be seen pulsing  
+- the 286 CPU starts to do data transfers, which can be observed from slot data lines being active and pulsing
+- data transfers also should apply command lines such as /MEMR, /MEMW, /IOR, /IOW
+- the system controller should apply READY to the 286 (measure on coprocessor socket) to finalize each cycle
+Each type of CPU activity should be measured right after powering on, and continue to measure while powering the board off and on to observe any initial pulse activities by the CPU.
+- measure the /ROM8_CS line, pin 22 on the system ROM (driven by address bus driver)
+- measure the /MEMRX line, pin 22 on the system ROM (driven by EMS controller)
+- measure the memory address lines on the system ROM
+- measure the X-data bus bits on the system ROM which should reflect the read data from system ROM
+- measure all clocks present on all the IC clock input pins such as the 286 CPU, DMACs, 8254 system timer, RTC, keyboard controller, FDC, UART
+- if signs of life from the 286 processor are all not present, check pin 29 RESET_286 on the CPU which should be initially high and then low after powering on
+Power on reset should take 2 seconds to hold the system in RESET after power-on, after which all RESET nets should be released
+
+# Optional self RESET is available if desired
+The CPLD projects currently don't include being able to RESET from an IO port write, however this would be possible by updating the EMS controller which can then pull the /RES signal low using an open drain output. The /RES line is separated from the power on RESET logic using a resistor, when then acts as a pull up for the open drain /RES output of the EMS controller.
+So if you are programming software and have a need for this function, send me a message. For example, a software RESET could be used to disable the EMS function and default back to XMS after running RealDOOM, so a software RESET can also be used without needing to apply the RESET button. This option came to mind while working on the REV3E design that we can add this function and it may possibly be of use. Otherwise, a number of IO port or register controlled functions are generally possible by updating the CPLD programming to create I/O register bits. Caution must be observed there to only use the minimal IO register bits which are needed to provide a function, because the CPLDs only support a very limited number of register bit flipflops.
 
 Kind regards,
 
 Rodney
 
-Last updated may 16th, 2026.
+Last updated may 25th, 2026.
