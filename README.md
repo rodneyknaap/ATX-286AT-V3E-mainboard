@@ -237,46 +237,46 @@ When you get to this level, debugging may be done or at least the hardest part i
 During the POST, the LED displays run up the POST level outputs written to port 80h, usually from 00 until 2F when booting, and returning to 00 after boot is started.
 Likely the first time when powering on, the BIOS will beep and indicate that CMOS settings need to be set. After a keypress, you can set the options in the BIOS and save.
 During the POST, the test codes will run up very fast, however if the code remains at a certain level, that indicates a problem found in that part of the POST.
-A few typical codes based on MR BIOS are:
-08  DMAC failed
-0A  memory error, usually some connectivity issue or short between address lines etc.
-0B  interrupt controller problem
-0C  interrupt controller or system timer problem
-0D  system timer problem
-0E  system timer problem
-0F  RTC/CMOS problem
-10  VGA INIT problem
-12  keyboard controller problem
-17  A20 control problem related to keyboard controller GATE_A20 output or GATE_A20 not working
-19  parity test problem, should not occur since we don't use parity
-21  BIOS found a CMOS error, entering setup
-22  setup is running
-2F  searching for boot device
-00  booting
-If errors are found, a beep is sounded while outputting the relevant POST code on the display.
+A few typical codes based on MR BIOS are:  
+08  DMAC failed  
+0A  memory error, usually some connectivity issue or short between address lines etc.  
+0B  interrupt controller problem  
+0C  interrupt controller or system timer problem  
+0D  system timer problem  
+0E  system timer problem  
+0F  RTC/CMOS problem  
+10  VGA INIT problem  
+12  keyboard controller problem  
+17  A20 control problem related to keyboard controller GATE_A20 output or GATE_A20 not working  
+19  parity test problem, should not occur since we don't use parity  
+21  BIOS found a CMOS error, entering setup  
+22  setup is running  
+2F  searching for boot device  
+00  booting  
+If errors are found, a beep is sounded while outputting the relevant POST code on the display.  
 
-The 286 CPU can be detected/scope probe measured to be active by:
-- it receives clock pulses on 286_CLK (measure on coprocessor socket)
+The 286 CPU can be detected/scope probe measured to be active by:  
+- it receives clock pulses on 286_CLK (measure on coprocessor socket)  
 - it asserts S1 for reading the system ROM code, repeated pulses seen right after power on, so power off and on the board, and measure for this (measure on coprocessor socket)  
 - it asserts the address lines to drive the system memory and IO address inputs, slot address lines can be seen pulsing  
-- the 286 CPU starts to do data transfers, which can be observed from slot data lines being active and pulsing
-- data transfers also should apply command lines such as /MEMR, /MEMW, /IOR, /IOW
-- the system controller should apply READY to the 286 (measure on coprocessor socket) to finalize each cycle
-Each type of CPU activity should be measured right after powering on, and continue to measure while powering the board off and on to observe any initial pulse activities by the CPU.
-- measure the /ROM8_CS line, pin 22 on the system ROM (driven by address bus driver)
-- measure the /MEMRX line, pin 22 on the system ROM (driven by EMS controller)
-- measure the memory address lines on the system ROM
-- measure the X-data bus bits on the system ROM which should reflect the read data from system ROM
-- measure all clocks present on all the IC clock input pins such as the 286 CPU, DMACs, 8254 system timer, RTC, keyboard controller, FDC, UART
+- the 286 CPU starts to do data transfers, which can be observed from slot data lines being active and pulsing  
+- data transfers also should apply command lines such as /MEMR, /MEMW, /IOR, /IOW  
+- the system controller should apply READY to the 286 (measure on coprocessor socket) to finalize each cycle  
+Each type of CPU activity should be measured right after powering on, and continue to measure while powering the board off and on to observe any initial pulse activities by the CPU.  
+- measure the /ROM8_CS line, pin 22 on the system ROM (driven by address bus driver)  
+- measure the /MEMRX line, pin 22 on the system ROM (driven by EMS controller)  
+- measure the memory address lines on the system ROM  
+- measure the X-data bus bits on the system ROM which should reflect the read data from system ROM  
+- measure all clocks present on all the IC clock input pins such as the 286 CPU, DMACs, 8254 system timer, RTC, keyboard controller, FDC, UART  
 - if signs of life from the 286 processor are all not present, check pin 29 RESET_286 on the CPU which should be initially high and then low after powering on
-Power on reset should take 2 seconds to hold the system in RESET after power-on, after which all RESET nets should be released
+Power on reset should take 2 seconds to hold the system in RESET after power-on, after which all RESET nets should be released  
 
-# Optional self RESET is available if desired
+# Optional self RESET is available if desired  
 The CPLD projects currently don't include being able to RESET from an IO port write, however this would be possible by updating the EMS controller which can then pull the /RES signal low using an open drain output. The /RES line is separated from the power on RESET logic using a resistor, when then acts as a pull up for the open drain /RES output of the EMS controller.
-So if you are programming software and have a need for this function, send me a message. For example, a software RESET could be used to disable the EMS function and default back to XMS after running RealDOOM, so a software RESET can also be used without needing to apply the RESET button. This option came to mind while working on the REV3E design that we can add this function and it may possibly be of use. Otherwise, a number of IO port or register controlled functions are generally possible by updating the CPLD programming to create I/O register bits. Caution must be observed there to only use the minimal IO register bits which are needed to provide a function, because the CPLDs only support a very limited number of register bit flipflops.
+So if you are programming software and have a need for this function, send me a message. For example, a software RESET could be used to disable the EMS function and default back to XMS after running RealDOOM, so a software RESET can also be used without needing to apply the RESET button. This option came to mind while working on the REV3E design that we can add this function and it may possibly be of use. Otherwise, a number of IO port or register controlled functions are generally possible by updating the CPLD programming to create I/O register bits. Caution must be observed there to only use the minimal IO register bits which are needed to provide a function, because the CPLDs only support a very limited number of register bit flipflops.  
 
 Kind regards,
 
 Rodney
 
-Last updated may 25th, 2026.
+Last updated may 30th, 2026.
