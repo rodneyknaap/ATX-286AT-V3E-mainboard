@@ -275,8 +275,29 @@ Power on reset should take 2 seconds to hold the system in RESET after power-on,
 The CPLD projects currently don't include being able to RESET from an IO port write, however this would be possible by updating the EMS controller which can then pull the /RES signal low using an open drain output. The /RES line is separated from the power on RESET logic using a resistor, when then acts as a pull up for the open drain /RES output of the EMS controller.
 So if you are programming software and have a need for this function, send me a message. For example, a software RESET could be used to disable the EMS function and default back to XMS after running RealDOOM, so a software RESET can also be used without needing to apply the RESET button. This option came to mind while working on the REV3E design that we can add this function and it may possibly be of use. Otherwise, a number of IO port or register controlled functions are generally possible by updating the CPLD programming to create I/O register bits. Caution must be observed there to only use the minimal IO register bits which are needed to provide a function, because the CPLDs only support a very limited number of register bit flipflops.  
 
+# More details concerning cooling of the CPLDs  
+The 100 pin Atmel CPLDs are very tiny chip packages and these heat up quite fast. The temperature of these CPLDs needs to remain under control in order for the entire system to remain within functional timing constraints. This means that we need to take care of the 100 pin CPLD cooling sufficiently to keep these below a temperature where the timing will start to fail.  
+When ambient temperatures are generally expected to be low, a 12V 8cm fan running at 5V placed about 2cm from the 4 CPLDs should be sufficient. In warmer temperatures it's advised to stick a small aluminium heatsink onto the 100 pin CPLDs. Then adding the 12V 8cm fan running at 5V in the same way should keep the CPLDs cool enough. So far I have tested the heatsink with low RPM fan up to around 30 degrees Celcius and the system remained stable. An example of the heatsinks attached to the 100 pin CPLDs can be seen here:  
+
+![Example of cooling](COOLING_DETAIL.jpg)   
+
+# Further development of the System controller CPLD  
+
+In the design stage of the REV3E system, I have further reduced the logic and pin usage by moving more secondary functions to the other CPLDs. The additional spare logic which these changes have made available can then be put to good use in the System controller in development to possibly advance the design further.  
+
+# Increasing the synchronous operation of the System controller  
+The System controller CPLD is partially based on asynchronous function of registers. This means that generally the asynchronous sections of the design do not adhere to clock transitions. Further in the asynchronous design, there are some fast control signals added into the READY end stage to then push the READY timing into a functional window. The secondary advantage of asynchronous logic here in the fast dynamic clock release of the System controller is that it this is to a lesser degree dependent on clock transitions, and applying a dynamic CPU clock into the design is more easy to do because there are less clock points in the design which need to be considered relative to the dynamic clock model.  
+
+I am currently developing more synchronous models of the System controller CPLD. The first step in the design has been to increase the input clock to 64MHz so that the clocking precision can be higher because of the faster clock transitions being available in the System controller. The second change in achieving a more synchronous design has been to remove the dynamic CPU clock aspect from the design in order to reduce the complexity of timing in the design, so we can focus on the essential timing itself in order to achieve a stable operation of the system. The first release of a more synchronous fixed clock model is a System controller design based on a fixed 64MHz oscillator. The resulting double frequency 286_CLK output of this design is 32MHz, leading to 16MHz internal clock speed of the 286 CPU. The advantage of running the 286 CPU at 16MHz processing speed is that we can control the IO and VGA memory access transparently without needing to apply cycle control and dynamic clock yet. This situation enables us to first focus on the development of synchronous points in the design.  
+
+# First more synchronous system control release: 64MHz oscillator with 16MHz CPU speed
+This first release features a more synchronous system control. The design has been verified with a 64MHz clock oscillator for FCLOCK, internally in the quartus clock the signal is named 2FCLOCK to indicate the double clock speed. This is then divided by two to provide the FCLOCK frequency. In this fixed clock release, 286_CLK going to the 286 CPU is always of equal frequency with FCLOCK. The design functions well with a 64MHz oscillator and also is able to function with a 32MHz oscillator where we get a 8MHz CPU processing clock speed. However operating the CPU at 8MHz with this release does have some minor side effects of the UART port detection by MR BIOS sometimes resulting in adding a few "ghost" COM ports to the system. This can be seen by "hardware changed" beeping of MR BIOS prompting to save the changes. However in any case, the COM1 port always remains functional and otherwise the release functions stable at 8MHz as well. Generally the release is intended for using a 64MHz oscillator so operation may differ when using other frequencies.
+This first more synchronous System control design project can be found under the filename "SYSCON_64M_OSC_16M_FIXED_CLOCK_SPEED.zip" in this project directory.  
+
+Further more synchronous versions will be released when these are developed and have passed stability testing.  
+
 Kind regards,
 
 Rodney
 
-Last updated may 30th, 2026.
+Last updated june 3rd, 2026.
