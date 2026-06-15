@@ -297,8 +297,12 @@ This first more synchronous System control design project can be found under the
 
 Further more synchronous versions will be released when these are developed and have passed stability testing.  
 
+# Update U2: Socket for CPU  
+Previously I thought a socket could not fit in the location of the PLCC CPU footprint, but I had a try to see if it would fit.  
+So this worked out and I have uploaded the socketed CPU gerber version U2. Builders who want to solder down the CPU for maximum stability can use the U1 version of the gerbers.  
+
 Kind regards,
 
 Rodney
 
-Last updated june 3rd, 2026.
+Last updated june 15th, 2026.
