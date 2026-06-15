@@ -279,6 +279,7 @@ So if you are programming software and have a need for this function, send me a 
 The 100 pin Atmel CPLDs are very tiny chip packages and these heat up quite fast. The temperature of these CPLDs needs to remain under control in order for the entire system to remain within functional timing constraints. This means that we need to take care of the 100 pin CPLD cooling sufficiently to keep these below a temperature where the timing will start to fail.  
 When ambient temperatures are generally expected to be low, a 12V 8cm fan running at 5V placed about 2cm from the 4 CPLDs should be sufficient. In warmer temperatures it's advised to stick a small aluminium heatsink onto the 100 pin CPLDs. Then adding the 12V 8cm fan running at 5V in the same way should keep the CPLDs cool enough. So far I have tested the heatsink with low RPM fan up to around 30 degrees Celcius and the system remained stable. An example of the heatsinks attached to the 100 pin CPLDs can be seen here:  
 
+
 ![Example of cooling](COOLING_DETAIL.jpg)   
 
 # Further development of the System controller CPLD  
