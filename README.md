@@ -302,8 +302,21 @@ Further more synchronous versions will be released when these are developed and 
 Previously I thought a socket could not fit in the location of the PLCC CPU footprint, but I had a try to see if it would fit.  
 So this worked out and I have uploaded the socketed CPU gerber version U2. Builders who want to solder down the CPU for maximum stability can use the U1 version of the gerbers.  
 
+# Update regarding the project blog  
+From july 2026 I will continue updating my project blog on my own website.
+So anyone who is interested is hereby invited to take a look.
+I created a forum system there and if you like to join, feel free to send me an email and I will create a login for you so you can post subjects and reply to threads. 
+
+You can find my website in the repository link URL or via https://www.knaapic.nl  
+The menu "Historic computing" contains dedicated pages for the repository projects.
+A lot of information is the same as here but some details have been elaborated on my website.
+The forum link is: 
+https://knaapic.nl/community/   
+
+Thank you for your interest!
+
 Kind regards,
 
 Rodney
 
-Last updated june 15th, 2026.
+Updated last on july 11th, 2026.
