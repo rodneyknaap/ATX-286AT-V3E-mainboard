@@ -302,22 +302,41 @@ Further more synchronous versions will be released when these are developed and 
 Previously I thought a socket could not fit in the location of the PLCC CPU footprint, but I had a try to see if it would fit.  
 So this worked out and I have uploaded the socketed CPU gerber version U2. Builders who want to solder down the CPU for maximum stability can use the U1 version of the gerbers.  
 
-# Update regarding the project blog  
-From july 2026 I will only update my project blog on my own website and I will update the readme info on GitHub for the projects.  
+# Project blog frequent updates about development now available on my website
+I created a forum system there and if you like to join, feel free to send me an email and I will create a login for you so you can post subjects and reply to the threads. 
 
-So anyone who is interested is hereby invited to take a look at my website.
-I created a forum system there and if you like to join, feel free to send me an email and I will create a login for you so you can post subjects and reply to threads. 
+# Update: new more synchronous system control design  
+8-8-2026: I have developed a much more synchronous System controller design.  
+It is performing well and stable with a 80MHz oscillator with the following improvements:  
+- READY sampling is now performed synchronously  
+- ARDY_n design point has been modified into CYC_START_END_n register:  
+This results in a fully synchronous operation for both the END_CYC operation, and the IOCH_RDY handling has been split out to the READY sampler itself. Conversion cycles are being addressed fully synchronously so no more asynchronous END_CYC operation. This is a huge deal to finally get this working at 20MHz CPU speed with the 80286 CPU which is famously very sensitive on its READY timing.  
+- dynamic clock mode for the system controller and 80286 CPU has been restored in this release where we use a verilog code block to create dynamic clocking points for both the 286_CLK and READY sampling clock logic. Also a new byte conversion register has been introduced into the design to store and apply an active conversion cycle when conversion is detected. So this new signal lasts throughout the entire conversion cycle until READY and can be used for various logic which depends on it.  
+- new END_CYC decoding has been created to also include and mask a conversion cycle to have increased certainty that no premature READY can get triggered by the CYC_START_END_n register.  
+- The CYC_START_END register now drives the READY sampling input with a fully synchronous timing.
 
-You can find my website in the repository link URL or via https://www.knaapic.nl  
-The menu "Historic computing" contains dedicated pages for the repository projects.
-A lot of information is the same as here but some details have been elaborated on my website.
-The forum link is: 
-https://knaapic.nl/community/   
+Further tests will be done to find out the clock range of this new system control design model.
+Using the address bus driver which releases 0A and 0B VGA RAM cycle control can be done based on testing with your VGA card.
+Otherwise simply program the previous release for the Address bus driver to restore VGA RAM cycle control.
+So the higher VGA performance Address bus driver is offered here in case your card and clock speed can support the VGA cycles running at identical speeds to system RAM.  
 
-Thank you for your interest, I look forward to hearing from you!
+Please also refer to the project forum linked below where I regularly document more details about the CPLD updates with sectional schematics to illustrate and explain the improvements made.  
+https://knaapic.nl/phpBB3/  
+The forum now runs separately from the website for better functionality.  
+So when you want to check out the website project pages you can check them out via:  
+https://www.knaapic.nl  
+The menu item "Historic computing" contains the dedicated pages for the repository projects.  
+There are now a lot of schematics directly viewable on the project pages which helps to gain more direct insight into this design.   
+The website has a contact page where you can send me a message.  
+Everyone is welcome to join my forum by dropping a message there.  
+I hope to develop a community of people who want to help preserving the historic technology which is at the basis of these recreation designs. This design project always aims to preserve and accurately replicate the full original system behavior from the IBM 5170.  
+So this is an important distinction from a theoretical pure HDL based system abstraction.  
+The original system must always remain preserved in the new design which is historically very significant.  
+
+Thank you for your interest, I look forward to hearing from anyone who is interested and I hope I can inspire others to join the technology preservation team!  
 
 Kind regards,
 
 Rodney
 
-Updated last on july 11th, 2026.
+Updated last on august 8th, 2026.
