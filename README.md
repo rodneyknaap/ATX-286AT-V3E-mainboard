@@ -315,13 +315,20 @@ This results in a fully synchronous operation for both the END_CYC operation, an
 - new END_CYC decoding has been created to also include and mask a conversion cycle to have increased certainty that no premature READY can get triggered by the CYC_START_END_n register.  
 - The CYC_START_END register now drives the READY sampling input with a fully synchronous timing.  
 
-# 20-8-2026: even more areas of the system controller have been updated with synchronous logic  
+# 21-8-2026: almost fully synchronous System controller design reached  
 Check out my project forum for the most recent write ups with the relevant circuit diagrams per update:  
 https://knaapic.nl/phpBB3/viewtopic.php?t=1  
+Latest progress:  
+- designed a synchronous RESET, RESET_286, 80286 SHUTDOWN and 8042_RC initiated CPU-only RESET handling  
+- now removed all circuits and active output pins unused in the REV3E design  
+- synchronous NPU ERROR handling (to be tested with clock edges if timing is sufficient)  
+- reduced the logic usage to 86 of the 128 available macrocells while maintaining dynamic transitioning 80286 clock cycles  
+- fully tested with 80MHz input oscillator, resulting in 20MHz 80286 processing speed higher frequencies will be tested when I have the necessary higher clock frequency oscillators  
+- slower clocks could be realized without changing the oscillator by adding a pre-division of the input clock into the design which each time can slow down the CPU to half or quarter speed, for example  
 
-Further tests will be done to find out the clock range of this new system control design model.
-Using the address bus driver which releases 0A and 0B VGA RAM cycle control can be done based on testing with your VGA card.
-Otherwise simply program the previous release for the Address bus driver to restore VGA RAM cycle control.
+Further tests will be done to find out the clock range of this new system control design model.  
+Using the address bus driver which releases 0A and 0B VGA RAM cycle control can be done based on testing with your VGA card.  
+Otherwise simply program the previous release for the Address bus driver to restore VGA RAM cycle control.  
 So the higher VGA performance Address bus driver is offered here in case your card and clock speed can support the VGA cycles running at identical speeds to system RAM.  
 
 Please also refer to the project forum linked below where I regularly document more details about the CPLD updates with sectional schematics to illustrate and explain the improvements made.  
