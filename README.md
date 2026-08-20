@@ -313,7 +313,11 @@ It is performing well and stable with a 80MHz oscillator with the following impr
 This results in a fully synchronous operation for both the END_CYC operation, and the IOCH_RDY handling has been split out to the READY sampler itself. Conversion cycles are being addressed fully synchronously so no more asynchronous END_CYC operation. This is a huge deal to finally get this working at 20MHz CPU speed with the 80286 CPU which is famously very sensitive on its READY timing.  
 - dynamic clock mode for the system controller and 80286 CPU has been restored in this release where we use a verilog code block to create dynamic clocking points for both the 286_CLK and READY sampling clock logic. Also a new byte conversion register has been introduced into the design to store and apply an active conversion cycle when conversion is detected. So this new signal lasts throughout the entire conversion cycle until READY and can be used for various logic which depends on it.  
 - new END_CYC decoding has been created to also include and mask a conversion cycle to have increased certainty that no premature READY can get triggered by the CYC_START_END_n register.  
-- The CYC_START_END register now drives the READY sampling input with a fully synchronous timing.
+- The CYC_START_END register now drives the READY sampling input with a fully synchronous timing.  
+
+# 20-8-2026: even more areas of the system controller have been updated with synchronous logic  
+Check out my project forum for the most recent write ups with the relevant circuit diagrams per update:  
+https://knaapic.nl/phpBB3/viewtopic.php?t=1  
 
 Further tests will be done to find out the clock range of this new system control design model.
 Using the address bus driver which releases 0A and 0B VGA RAM cycle control can be done based on testing with your VGA card.
