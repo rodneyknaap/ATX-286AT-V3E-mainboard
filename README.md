@@ -326,6 +326,35 @@ Latest progress:
 - fully tested with 80MHz input oscillator, resulting in 20MHz 80286 processing speed higher frequencies will be tested when I have the necessary higher clock frequency oscillators  
 - slower clocks could be realized without changing the oscillator by adding a pre-division of the input clock into the design which each time can slow down the CPU to half or quarter speed, for example  
 
+# 30-8-2026: further advancements, as good as finished synchronous operation  
+
+Release file name: SYSCON_ABD_80M_SYNCV6_DYN_CLK_30-08-2026.zip
+Summary of improvements:  
+- reduced and converted CPU state machine to fully synchronous operation  
+- updated clock switching register  
+- removed AIOW  
+- created a new CMDLY design  
+- replaced SM_IO_n latch with DFFE register  
+- with 80MHz oscillator now 3.33MHz DMA_CLK divide by 24  
+- again updated DT_R with better clocked version - now meets timing  
+- updated DEN_WRITE another time with better reduced logic  
+- extended 80286 RESET duration to fix occasional RESET fails  
+- updated LS_A0 with DFFE register  
+- updated coprocessor error handling with synchronous version (to be tested)  
+- created a limited SDC file, don't see a difference but may be useful, DMA_CLK is not included it gave errors  
+
+Again here the Address bus driver CPLD project is included in the archive for a few EMS situations where we excluded the VGA RAM regions for slow cycle switching. So this requires a fast VGA card that can handle these speeds. Tested correctly with 80MHz oscillator and 20MHz 80286 operational clockspeed.  
+If using other oscillators than 80MHz, check your actual clock speed divisions and adapt DMA_CLK and 287_CLK if necessary.
+Typical CMOS DMACs can run around 4-5MHz but I had a few issues with floppy formatting when running the DMACs on 5MHz.
+So this led me to choose 3.33MHz for the DMACs. Since this only involves IO to memory transfers I have not seen any impact on the system performance.  
+
+Otherwise it's looking like I seem to have reached a pretty satisfactory end development stage where the entire design is mostly fully synchronous. A few asynchronous clears are present in registers where removing these would involve rather elaborate constructions which I don't want to introduce into this design using a CPLD, especially because it is working really well now and the clears just occur at the end of the cycle to prepare the registers to be set again. So nothing depends on the clearing instance timing where only the synchronous register set timing controls the system. This is the case in the READY output registers and the Q1-Q4 shifters.  
+
+As seen from the above list, I have now with this synchronous design been able to implement a lot of changes which previously didn't work because of throwing off the whole timing. With the now almost fully synchronous design I have been able to change the remaining things I wanted to do now and these all work. A big improvement!  
+
+So here in this design we have a reduced two register state machine which only determines T_STATUS and T_COMMAND, and combines T_IDLE and T_HOLD with NEW_n. Decodes can be done by also taking 286_HLDA to discern between these. With the new System control logic, this is all that is necessary to drive the command timing of the cycle mechanism of the 80286.  
+
+
 Further tests will be done to find out the clock range of this new system control design model.  
 Using the address bus driver which releases 0A and 0B VGA RAM cycle control can be done based on testing with your VGA card.  
 Otherwise simply program the previous release for the Address bus driver to restore VGA RAM cycle control.  
@@ -350,4 +379,4 @@ Kind regards,
 
 Rodney
 
-Updated last on august 8th, 2026.
+Updated last on august 30th, 2026.
