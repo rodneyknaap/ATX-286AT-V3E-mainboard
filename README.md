@@ -360,7 +360,7 @@ As seen from the above list, I have now with this synchronous design been able t
 
 So here in this design we have a reduced two register state machine which only determines T_STATUS and T_COMMAND, and combines T_IDLE and T_HOLD with NEW_n. Decodes can be done by also taking 286_HLDA to discern between these. With the new System control logic, this is all that is necessary to drive the command timing of the cycle mechanism of the 80286.  
 
-# Latest news nov 13th, 2026 REV3E system with synchronous system controller now runs at 26MHz!  
+# Latest news nov 13th, 2026 REV3E system with synchronous system controller now runs at 26MHz (EMS) and 29MHz(XMS)!  
 
 ![OLED Display](Clock_display.jpg)  
 
@@ -382,7 +382,7 @@ I was able to verify:
 - reliable IDE drive control, tested by checkit 3 up to 4.3MB per second  
 - windows 3.1 100% stable at 29MHz  
 - Superscape 3DBENCH score 10.2 frames per second  
-- wolf3d 100% stable including SFX and sound  
+- wolf3d 100% stable including SFX and music  
 - floppy format and all other DMA functions 100% stable  
 It is however necessary to use cycle control on the VGA cycles above 26MHz, otherwise the Diamond speedstar VGA controller cannot keep up with the CPU.
 So this needs the original address bus driver project which does look at the 0A and 0B VGA RAM decoding to switch over to slow AT cycles.
