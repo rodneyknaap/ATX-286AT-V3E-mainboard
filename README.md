@@ -1,7 +1,7 @@
 # ATX-286AT-V3E-mainboard
 This project features the REV3E design for a 80286 ATX mainboard based on the IBM 5170 AT PC
 
-# Latest news - REV3E system is now running at 26MHz!  
+# Latest news - REV3E system is now running at 29MHz for XMS mode and 26MHz for EMS mode!  
 
 ![OLED Display](Clock_display.jpg)  
 
@@ -374,7 +374,23 @@ I will consider using the ATMega328 in more detail for controlling system functi
 
 ![26 MHz detected by MR BIOS](MRBIOS_26M.jpg)  
 
-The higher VGA performance Address bus driver is also offered here in case your card and clock speed can support the VGA cycles running at identical speeds to system RAM.  
+# Further tests have indicated that the REV3E is even able to function 100% reliable at 29MHz for all XMS operations!  
+
+I was able to verify:  
+- stable boot  
+- checkit 3 system board tests completed  
+- reliable IDE drive control, tested by checkit 3 up to 4.3MB per second  
+- windows 3.1 100% stable at 29MHz  
+- Superscape 3DBENCH score 10.2 frames per second  
+- wolf3d 100% stable including SFX and sound  
+- floppy format and all other DMA functions 100% stable  
+It is however necessary to use cycle control on the VGA cycles above 26MHz, otherwise the Diamond speedstar VGA controller cannot keep up with the CPU.
+So this needs the original address bus driver project which does look at the 0A and 0B VGA RAM decoding to switch over to slow AT cycles.
+Since the VGA controller is interfacing with a much faster CPU, this also speeds up the VGA RAM cycles, even when these are slowed down for reliability.
+So if you want to keep the VGA at maximum speed, 26MHz may be the answer. Or if you want to go up to 29MHz full performance, you can also do that by using the original Address bus driver programming.
+
+The RealDOOM EMS system inserts SRAMs in the address assertion, which adds a 10ns address assertion delay with the current SRAMs used as the EMS page registers.
+So if we can find faster SRAMs for example of 1ns for the page registers, this likely raises the RealDOOM speed to 29MHz as well!
 
 Please also refer to the project forum linked below where I regularly document more details about the CPLD updates with sectional schematics to illustrate and explain the improvements made.  
 https://knaapic.nl/phpBB3/  
