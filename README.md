@@ -374,7 +374,7 @@ I will consider using the ATMega328 in more detail for controlling system functi
 
 ![26 MHz detected by MR BIOS](MRBIOS_26M.jpg)  
 
-# Further tests have indicated that the REV3E is even able to function 100% reliable at 29MHz for all XMS operations!  
+# Further tests have now indicated that the REV3E is even able to function 100% reliable at 29MHz for all XMS operations!  
 
 I was able to verify:  
 - stable boot  
@@ -391,6 +391,11 @@ So if you want to keep the VGA at maximum speed, 26MHz may be the answer. Or if 
 
 The RealDOOM EMS system inserts SRAMs in the address assertion, which adds a 10ns address assertion delay with the current SRAMs used as the EMS page registers.
 So if we can find faster SRAMs for example of 1ns for the page registers, this likely raises the RealDOOM speed to 29MHz as well!
+
+![29 MHz detected by MR BIOS](MRBIOS_29MHZ.jpg)  
+
+
+![29 MHz LM60 test results](LM60_AT_29MHZ_CLOCK.jpg)  
 
 Please also refer to the project forum linked below where I regularly document more details about the CPLD updates with sectional schematics to illustrate and explain the improvements made.  
 https://knaapic.nl/phpBB3/  
