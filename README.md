@@ -367,6 +367,8 @@ I will consider using the ATMega328 in more detail for controlling system functi
 
 ![ATMega328 clock programming solution](ATMega328P.jpg)  
 
+![SI5351 clock generator now powering REV3E system!](SI5351_MOUNTED_IN_REV3E.jpg)  
+
 ![26 MHz detected by MR BIOS](MRBIOS_26M.jpg)  
 
 The higher VGA performance Address bus driver is also offered here in case your card and clock speed can support the VGA cycles running at identical speeds to system RAM.  
