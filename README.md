@@ -1,6 +1,9 @@
 # ATX-286AT-V3E-mainboard
 This project features the REV3E design for a 80286 ATX mainboard based on the IBM 5170 AT PC
 
+# Latest news - REV3E system is now running at 26MHz!  
+See at the bottom for more information!
+
 ![front photo of the mainboard built into a PC case](CPLD_SYSTEM_REV3E_BUILT_INTO_A_PC_CASE.jpg)   
 
 ![front photo of the assembled mainboard](REV3E_MAINBOARD.jpg)   
@@ -354,11 +357,19 @@ As seen from the above list, I have now with this synchronous design been able t
 
 So here in this design we have a reduced two register state machine which only determines T_STATUS and T_COMMAND, and combines T_IDLE and T_HOLD with NEW_n. Decodes can be done by also taking 286_HLDA to discern between these. With the new System control logic, this is all that is necessary to drive the command timing of the cycle mechanism of the 80286.  
 
+# Latest news nov 13th, 2026 REV3E system with synchronous system controller now runs at 26MHz!  
 
-Further tests will be done to find out the clock range of this new system control design model.  
-Using the address bus driver which releases 0A and 0B VGA RAM cycle control can be done based on testing with your VGA card.  
-Otherwise simply program the previous release for the Address bus driver to restore VGA RAM cycle control.  
-So the higher VGA performance Address bus driver is offered here in case your card and clock speed can support the VGA cycles running at identical speeds to system RAM.  
+![OLED Display](Clock_display.jpg)  
+
+After doing a lot of experimentation I decided to use a ATMega328P with a Adafruit SI5351 module and OLED display to generate a variable system controller CPLD clock input. I have worked with Google AI to develop the code in Arduino sketch software which programs and reprograms the SI5351 clock generator module by Adafruit and we can use two buttons to modify the frequency up and down on the oscillator. So thanks to this solution I have been able to fully test the upward clock range of the REV3E, which, without modifying the READY timing, so with the latest release version system controller as published here, was able to run at 26MHz without any issues. My last record was at 22.4MHz, so now we can go up a lot from that last result!  
+
+I will consider using the ATMega328 in more detail for controlling system functions and buttons, as well as a serial debugging and control console via USB to serial input which can connect a modern PC via USB to do debugging or control the system from the ATMega328. I am thinking about a REV3F design where I will also look into possibly featuring a micro-ATX form factor for the new design if I can make this fit. Other features will be included such as possibly a PicoGUS and certainly the SI5351 programmable clock solution will be included!  
+
+![ATMega328 clock programming solution](ATMega328P.jpg)  
+
+![26 MHz detected by MR BIOS](MRBIOS_26M.jpg)  
+
+The higher VGA performance Address bus driver is also offered here in case your card and clock speed can support the VGA cycles running at identical speeds to system RAM.  
 
 Please also refer to the project forum linked below where I regularly document more details about the CPLD updates with sectional schematics to illustrate and explain the improvements made.  
 https://knaapic.nl/phpBB3/  
