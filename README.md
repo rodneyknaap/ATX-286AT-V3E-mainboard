@@ -2,7 +2,10 @@
 This project features the REV3E design for a 80286 ATX mainboard based on the IBM 5170 AT PC
 
 # Latest news - REV3E system is now running at 26MHz!  
-See at the bottom for more information!
+
+![OLED Display](Clock_display.jpg)  
+
+See at the bottom for more information!  
 
 ![front photo of the mainboard built into a PC case](CPLD_SYSTEM_REV3E_BUILT_INTO_A_PC_CASE.jpg)   
 
